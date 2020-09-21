@@ -1,5 +1,6 @@
 use super::{
-    BadRequest, Forbidden, JwtError, MailgunError, TemplateError, TransformError, TreeError,
+    BadRequest, ConvertToString, Forbidden, JwtError, MailgunError, TemplateError, TransformError,
+    TreeError,
 };
 use std::convert::Infallible;
 use warp::http::StatusCode;
@@ -66,6 +67,10 @@ pub async fn error_handler(err: Rejection) -> Result<impl Reply, Infallible> {
     } else if let Some(body_error) = err.find::<BodyDeserializeError>() {
         code = StatusCode::BAD_REQUEST;
         message = format!("{}", body_error);
+        error!("{}", message);
+    } else if let Some(conver_to_string) = err.find::<ConvertToString>() {
+        code = StatusCode::INTERNAL_SERVER_ERROR;
+        message = format!("error converting to string: {}", conver_to_string.error);
         error!("{}", message);
     } else {
         code = StatusCode::INTERNAL_SERVER_ERROR;

@@ -4,4 +4,4 @@ mod percentages_handlers;
 
 pub use filters::percentages;
 pub use models::Percentage;
-pub use percentages_handlers::inset_percentages;
+pub use percentages_handlers::{fetch_percentages, inset_percentages};

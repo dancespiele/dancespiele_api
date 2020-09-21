@@ -2,6 +2,7 @@ use jsonwebtoken::errors::Error as ErrorToken;
 use reqwest::Error as ReqWestError;
 use serde_json::error::Error as SerdeError;
 use sled::Error as SledError;
+use std::str::Utf8Error;
 use tera::Error as TeraError;
 use warp::reject::Reject;
 
@@ -53,3 +54,10 @@ pub struct Forbidden {
 }
 
 impl Reject for Forbidden {}
+
+#[derive(Debug)]
+pub struct ConvertToString {
+    pub error: Utf8Error,
+}
+
+impl Reject for ConvertToString {}
