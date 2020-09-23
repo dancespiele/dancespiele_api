@@ -1,13 +1,12 @@
 use super::Percentage;
+use crate::db::init_tree;
 use crate::error::{ConvertToString, TransformError, TreeError};
-use sled::Db;
 use std::str;
 use warp::{reject, reply, Rejection, Reply};
 
-pub async fn inset_percentages(
-    tree: Db,
-    percentages: Vec<Percentage>,
-) -> Result<impl Reply, Rejection> {
+pub async fn inset_percentages(percentages: Vec<Percentage>) -> Result<impl Reply, Rejection> {
+    let tree = init_tree().map_err(|err| reject::custom(TreeError { error: err }))?;
+
     let percentages_string = serde_json::to_string(&percentages)
         .map_err(|err| reject::custom(TransformError { error: err }))?;
 
@@ -17,7 +16,8 @@ pub async fn inset_percentages(
     Ok(reply::json(&percentages))
 }
 
-pub async fn fetch_percentages(tree: Db) -> Result<impl Reply, Rejection> {
+pub async fn fetch_percentages() -> Result<impl Reply, Rejection> {
+    let tree = init_tree().map_err(|err| reject::custom(TreeError { error: err }))?;
     let percentages = tree
         .get("percentages")
         .map_err(|err| reject::custom(TreeError { error: err }))?
