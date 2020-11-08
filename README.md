@@ -61,7 +61,7 @@ SECRET=[API SECRET]
 **Note:** You need to create the token with the API secret manualy and set the `Authorization` header with the token generated to request to the API
 
 ## Do you like Dancespiele apps?
-If you like Dancespiele apps, help us supporting the projects:
+If you like Dancespiele apps, help me supporting the projects:
 - [Gitcoin](https://gitcoin.co/grants/1539/dancespiele)
 - BAT rewards in case that you use [Brave Browser](https://brave.com/)
 - [Github Sponsors](https://github.com/sponsors/dancespiele)
