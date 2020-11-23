@@ -1,8 +1,7 @@
-use crate::error::TemplateError;
+use celery::error::TaskError;
 use mailgun_api::MailgunApi;
 use std::env;
 use tera::{Context, Tera};
-use warp::{reject, Rejection};
 
 pub fn get_email_client() -> MailgunApi {
     let mailgung_secret = env::var("MAILGUN_SECRET").expect("MAILGUN_SECRET must be set");
@@ -11,25 +10,25 @@ pub fn get_email_client() -> MailgunApi {
     MailgunApi::new(&mailgung_secret, &mailgung_endpoint, &mailgung_domain)
 }
 
-pub fn get_tera() -> Result<Tera, Rejection> {
+pub fn get_tera() -> Result<Tera, TaskError> {
     let tera = Tera::new("static/email_templates/*.html")
-        .map_err(|err| reject::custom(TemplateError { error: err }))?;
+        .map_err(|err| TaskError::UnexpectedError(err.to_string()))?;
     Ok(tera)
 }
 
-pub fn get_set_stop_loss_context(
+pub fn get_set_notify_email_context(
     tera: Tera,
     pair: &str,
     price: &str,
     benefit: &str,
-) -> Result<String, Rejection> {
+) -> Result<String, TaskError> {
     let mut context = Context::new();
     context.insert("pair", pair);
     context.insert("price", price);
     context.insert("benefit", benefit);
     let template = tera
         .render("stop_loss.html", &context)
-        .map_err(|err| reject::custom(TemplateError { error: err }))?;
+        .map_err(|err| TaskError::UnexpectedError(err.to_string()))?;
 
     Ok(template)
 }
