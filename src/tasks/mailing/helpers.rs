@@ -10,8 +10,8 @@ pub fn get_email_client() -> MailgunApi {
     MailgunApi::new(&mailgung_secret, &mailgung_endpoint, &mailgung_domain)
 }
 
-pub fn get_tera() -> Result<Tera, TaskError> {
-    let tera = Tera::new("static/email_templates/*.html")
+pub fn get_tera(lang: &str) -> Result<Tera, TaskError> {
+    let tera = Tera::new(&format!("static/email_templates/{}/*.html", lang))
         .map_err(|err| TaskError::UnexpectedError(err.to_string()))?;
     Ok(tera)
 }

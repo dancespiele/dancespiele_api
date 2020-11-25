@@ -13,13 +13,13 @@ use dotenv::dotenv;
 use error::error_handler;
 use percentages::percentages;
 use std::env;
-use std::error::Error;
 use std::net::SocketAddr;
 use tasks::start_consumer;
+use tokio::io::Result;
 use warp::Filter;
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn Error>> {
+async fn main() -> Result<()> {
     dotenv().ok();
     pretty_env_logger::init();
 

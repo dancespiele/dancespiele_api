@@ -10,21 +10,28 @@ use std::env;
     on_success = email_sent
 )]
 pub async fn add_stop_loss(notify: NotifyEmail) -> TaskResult<String> {
+    let lang = env::var("LANGUAGE").unwrap_or_else(|_| String::from("en"));
+
+    let lang_folder = match lang.as_ref() {
+        "en" => "en",
+        "es" => "es",
+        &_ => "en",
+    };
     let sender = env::var("MAIL_FROM").expect("MAIL_FROM must be set");
-    let tera = get_tera()?;
+    let tera = get_tera(lang_folder)?;
     let mut email_client = get_email_client();
 
-    let template = get_set_notify_email_context(
-        tera,
-        &notify.pair,
-        &notify.price,
-        &notify.benefit,
-    )?;
+    let template =
+        get_set_notify_email_context(tera, &notify.pair, &notify.price, &notify.benefit)?;
 
     let params = EmailParams {
         to: notify.email,
         from: sender,
-        subject: "Realizada nueva orden de stop loss".to_string(),
+        subject: if lang_folder == "es" {
+            "Realizada nueva orden de stop loss".to_string()
+        } else {
+            "Executed new stop loss order".to_string()
+        },
         text: None,
         html: Some(template),
     };
