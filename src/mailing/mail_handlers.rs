@@ -10,8 +10,15 @@ pub async fn send_stop_loss_email(
     user: UserDto,
     stop_loss: StopLossSet,
 ) -> Result<impl Reply, Rejection> {
+    let lang = env::var("LANGUAGE").unwrap_or_else(|_| String::from("en"));
+
+    let lang_folder = match lang.as_ref() {
+        "en" => "en",
+        "es" => "es",
+        &_ => "en",
+    };
     let sender = env::var("MAIL_FROM").expect("MAIL_FROM must be set");
-    let tera = get_tera()?;
+    let tera = get_tera(lang_folder)?;
     let mut email_client = get_email_client();
 
     let template =
@@ -20,7 +27,11 @@ pub async fn send_stop_loss_email(
     let params = EmailParams {
         to: user.email,
         from: sender,
-        subject: "Realizada nueva orden de stop loss".to_string(),
+        subject: if lang_folder == "es" {
+            "Realizada nueva orden de stop loss".to_string()
+        } else {
+            "Executed new stop loss order".to_string()
+        },
         text: None,
         html: Some(template),
     };
