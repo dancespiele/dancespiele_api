@@ -70,8 +70,6 @@ If you like Dancespiele apps, help me supporting the projects:
 
 ## Do you want or you need a feature that is not implemented yet?
 
-## Do you want or you need a feature that is not implemented yet?
-
 You can have the feature that you wish creating the issue in the repository and funding it [here](https://issuehunt.io/r/dancespiele/dancespiele_api?tab=idle) or if you use [Brave Browser](https://brave.com/) also you can give rewards with BAT in the comment issue explanation.
 **How much bigger is your fund more priority will be your feature!** Results will be posted in [twitter](https://twitter.com/spielcrypto).
 Of course you can contribute with you code as well.
