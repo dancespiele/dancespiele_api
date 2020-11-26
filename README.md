@@ -23,6 +23,7 @@ MAILGUN_SECRET=[YOUR MAILGUN SECRET]
 MAILGUN_ENDPOINT=[YOUR MAILGUN ENDPOINT FOR EXAMPLE api.eu.mailgun.net]
 MAIL_FROM=[EMAIL SENDER]
 SECRET=[API SECRET]
+LANGUAGE=en //for now only support en (English) or es (Spanish)
 ```
 
 5. execute:
