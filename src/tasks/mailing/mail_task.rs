@@ -1,5 +1,4 @@
 use super::{get_email_client, get_set_notify_email_context, get_tera, NotifyEmail};
-use crate::db::init_tree;
 use celery::{error::TaskError, task::Task, TaskResult};
 use mailgun_api::api::EmailParams;
 use std::collections::HashMap;
@@ -48,23 +47,11 @@ async fn email_sent<T: Task>(task: &T, resp: &T::Returns)
 where
     T::Returns: ToString,
 {
-    let tree_result = init_tree();
-
     let id = task.request().id.clone();
     let name = task.name();
     let content = resp.to_string();
 
-    if let Ok(tree) = tree_result {
-        let task_saved_result = tree.insert(id.clone(), content.as_bytes());
-
-        if task_saved_result.is_ok() {
-            info!("Task {} with id {} is saved", name, id);
-        } else {
-            error!("Task {} with id {} fail saving in database", name, id);
-        }
-    } else {
-        info!("Task {} with id {} fail to connect with sled", name, id);
-    }
+    info!("Task {} with id {} and content {} complete", name, id, content);
 }
 
 async fn failure_task<T: Task>(task: &T, err: &TaskError) {
