@@ -6,27 +6,35 @@ extern crate serde;
 mod db;
 mod error;
 mod guard;
-mod mailing;
 mod percentages;
+mod tasks;
 
 use dotenv::dotenv;
 use error::error_handler;
-use mailing::mail;
 use percentages::percentages;
 use std::env;
 use std::net::SocketAddr;
+use tasks::start_consumer;
+use tokio::io::Result;
 use warp::Filter;
 
-#[tokio::main(core_threads = 2)]
-async fn main() {
+#[tokio::main]
+async fn main() -> Result<()> {
     dotenv().ok();
     pretty_env_logger::init();
 
     let server_url = env::var("SERVER_URL").expect("SERVER_URL must be set");
     let addr: SocketAddr = server_url.parse().unwrap();
 
-    let routes = percentages().or(mail()).recover(error_handler);
+    let routes = percentages().recover(error_handler);
 
-    info!("stat server in address {}", server_url);
+    tokio::spawn(async {
+        info!("Start task consumer");
+        start_consumer().await.unwrap();
+    });
+
+    info!("Start server in address {}", server_url);
     warp::serve(routes).run(addr).await;
+
+    Ok(())
 }
