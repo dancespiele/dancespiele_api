@@ -23,6 +23,7 @@ MAILGUN_SECRET=[YOUR MAILGUN SECRET]
 MAILGUN_ENDPOINT=[YOUR MAILGUN ENDPOINT FOR EXAMPLE api.eu.mailgun.net]
 MAIL_FROM=[EMAIL SENDER]
 SECRET=[API SECRET]
+LANGUAGE=en //for now only support en (English) or es (Spanish)
 ```
 
 5. execute:
@@ -66,8 +67,6 @@ If you like Dancespiele apps, help me supporting the projects:
 - BAT rewards in case that you use [Brave Browser](https://brave.com/)
 - [Github Sponsors](https://github.com/sponsors/dancespiele)
 - Burst coins to the address BURST-DPN6-2AT3-FCRL-9BBKG
-
-## Do you want or you need a feature that is not implemented yet?
 
 ## Do you want or you need a feature that is not implemented yet?
 
