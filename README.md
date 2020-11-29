@@ -4,7 +4,8 @@ Dancespiele API is the API to set the percentages of price coin increment for af
 
 ## Requirements
 
-* Rustup
+* [Rustup](https://rustup.rs/)
+* [RabbitMQ](https://www.rabbitmq.com/)
 * Account in [Mailgun](https://www.mailgun.com/)
 
 ## How to run the application
@@ -18,6 +19,7 @@ Dancespiele API is the API to set the percentages of price coin increment for af
 ```
 SLED_URL=[PATH WHERE YOU WANT THE SLED DB FILE]
 SERVER_URL=[API URL]
+AMPQ_ADDR=[YOUR AMPQ ADDRESS]
 MAILGUN_DOMAIN=[YOUR EMAIL DOMAIN]
 MAILGUN_SECRET=[YOUR MAILGUN SECRET]
 MAILGUN_ENDPOINT=[YOUR MAILGUN ENDPOINT FOR EXAMPLE api.eu.mailgun.net]
@@ -31,6 +33,8 @@ LANGUAGE=en //for now only support en (English) or es (Spanish)
 `cargo run` or with logs mode `RUST_LOG=dancespiele_api cargo=trace cargo run`
 
 6. Enjoy!
+
+**Note:** Before to execute Dancespiele API you need to run the RabbitMQ server first
 
 ## Endpoints
 
@@ -60,6 +64,10 @@ LANGUAGE=en //for now only support en (English) or es (Spanish)
 **Endpoint:** `GET /percentages`
 
 **Note:** You need to create the token with the API secret manualy and set the `Authorization` header with the token generated to request to the API
+
+### Issues
+
+**Dancespiele API doesn't shutdown with Ctrl-C:** For now you need to kill the process to shutdown the API. I'm trying to figure out how to fix this issue
 
 ## Do you like Dancespiele apps?
 If you like Dancespiele apps, help me supporting the projects:
