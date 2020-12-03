@@ -1,3 +1,5 @@
+use bcrypt::BcryptError;
+use diesel::result::Error as DbError;
 use jsonwebtoken::errors::Error as ErrorToken;
 use serde_json::error::Error as SerdeError;
 use sled::Error as SledError;
@@ -45,3 +47,17 @@ pub struct ConvertToString {
 }
 
 impl Reject for ConvertToString {}
+
+#[derive(Debug)]
+pub struct DatabaseError {
+    pub error: DbError,
+}
+
+impl Reject for DatabaseError {}
+
+#[derive(Debug)]
+pub struct HashPwdError {
+    pub error: BcryptError,
+}
+
+impl Reject for HashPwdError {}

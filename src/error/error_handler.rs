@@ -1,4 +1,7 @@
-use super::{BadRequest, ConvertToString, Forbidden, JwtError, TransformError, TreeError};
+use super::{
+    BadRequest, ConvertToString, DatabaseError, Forbidden, HashPwdError, JwtError, TransformError,
+    TreeError,
+};
 use std::convert::Infallible;
 use warp::http::StatusCode;
 use warp::{
@@ -40,6 +43,14 @@ pub async fn error_handler(err: Rejection) -> Result<impl Reply, Infallible> {
     } else if let Some(jwt_error) = err.find::<JwtError>() {
         code = StatusCode::FORBIDDEN;
         message = format!("Token error: {}", jwt_error.error);
+        error!("{}", message);
+    } else if let Some(database_error) = err.find::<DatabaseError>() {
+        code = StatusCode::INTERNAL_SERVER_ERROR;
+        message = format!("Database error: {}", database_error.error);
+        error!("{}", message);
+    } else if let Some(hash_pwd_error) = err.find::<HashPwdError>() {
+        code = StatusCode::INTERNAL_SERVER_ERROR;
+        message = format!("Error hashing password: {}", hash_pwd_error.error);
         error!("{}", message);
     } else if let Some(sled_error) = err.find::<TreeError>() {
         code = StatusCode::INTERNAL_SERVER_ERROR;

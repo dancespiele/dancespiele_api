@@ -2,13 +2,21 @@
 extern crate log;
 #[macro_use]
 extern crate serde;
+#[macro_use]
+extern crate diesel;
+#[macro_use]
+extern crate diesel_derive_enum;
 
 mod db;
 mod error;
 mod guard;
 mod percentages;
+mod schema;
+mod sql_types;
 mod tasks;
+mod user;
 
+use db::init_pool;
 use dotenv::dotenv;
 use error::error_handler;
 use percentages::percentages;
@@ -25,6 +33,7 @@ async fn main() -> Result<()> {
 
     let server_url = env::var("SERVER_URL").expect("SERVER_URL must be set");
     let addr: SocketAddr = server_url.parse().unwrap();
+    let pool = init_pool().unwrap();
 
     let routes = percentages().recover(error_handler);
 
