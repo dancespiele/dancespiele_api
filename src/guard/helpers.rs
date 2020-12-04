@@ -5,7 +5,7 @@ pub enum Roles {
     Customer,
 }
 
-pub enum TokenTypes {
+pub enum _TokenTypes {
     SignUp,
 }
 
@@ -27,8 +27,8 @@ pub fn set_role(role: &str) -> Roles {
     }
 }
 
-pub fn get_token_type(token_type: TokenTypes) -> String {
+pub fn _get_token_type(token_type: _TokenTypes) -> String {
     match token_type {
-        TokenTypes::SignUp => "signup".to_string(),
+        _TokenTypes::SignUp => "signup".to_string(),
     }
 }

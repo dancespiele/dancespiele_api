@@ -19,11 +19,13 @@ mod user;
 use db::init_pool;
 use dotenv::dotenv;
 use error::error_handler;
+use guard::user_login;
 use percentages::percentages;
 use std::env;
 use std::net::SocketAddr;
 use tasks::start_consumer;
 use tokio::io::Result;
+use user::user;
 use warp::Filter;
 
 #[tokio::main]
@@ -35,7 +37,10 @@ async fn main() -> Result<()> {
     let addr: SocketAddr = server_url.parse().unwrap();
     let pool = init_pool().unwrap();
 
-    let routes = percentages().recover(error_handler);
+    let routes = percentages()
+        .or(user(pool.clone()))
+        .or(user_login(pool))
+        .recover(error_handler);
 
     tokio::spawn(async {
         info!("Start task consumer");

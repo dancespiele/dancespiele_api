@@ -1,4 +1,5 @@
-use crate::user::GetUserDto;
+use super::Role;
+use crate::user::{GetUserDto, User};
 use chrono::prelude::*;
 use chrono::Duration;
 
@@ -10,6 +11,13 @@ pub struct Claims {
     pub role: String,
     pub iat: i64,
     pub exp: i64,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct LoginDto {
+    pub email: Option<String>,
+    pub username: Option<String>,
+    pub password: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -34,6 +42,22 @@ impl From<GetUserDto> for Claims {
             iss: user.username,
             email: user.email,
             role: user.role,
+            iat: Utc::now().timestamp(),
+            exp: expire_token.timestamp(),
+        }
+    }
+}
+
+impl From<(User, Role)> for Claims {
+    fn from(user: (User, Role)) -> Self {
+        let (user_entity, role_entity) = user;
+        let expire_token: DateTime<Utc> = Utc::now() + Duration::days(10);
+
+        Self {
+            sub: user_entity.id,
+            iss: user_entity.username,
+            email: user_entity.email,
+            role: role_entity.name,
             iat: Utc::now().timestamp(),
             exp: expire_token.timestamp(),
         }

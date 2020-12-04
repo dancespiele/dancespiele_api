@@ -4,7 +4,7 @@ use super::set_user_role;
 use crate::db::Pool;
 use crate::error::{BadRequest, DatabaseError, HashPwdError};
 use crate::guard::Role;
-use crate::guard::{get_role, set_role, GetUserAuthDto, Roles};
+use crate::guard::{get_role, set_role, Roles, UserDto};
 use bcrypt::hash;
 use diesel::prelude::*;
 use std::sync::Arc;
@@ -15,7 +15,7 @@ pub async fn create_user(
     role_guard: Option<String>,
     pool: Arc<Mutex<Pool>>,
     create_user_body: CreateUserDto,
-) -> Result<GetUserDto, Rejection> {
+) -> Result<impl Reply, Rejection> {
     use crate::schema::auth::dsl::*;
     use crate::schema::role::dsl::{name as role_name, role};
     use crate::schema::user::dsl::*;
@@ -78,7 +78,7 @@ pub async fn create_user(
             .execute(conn)
             .map_err(|err| reject::custom(DatabaseError { error: err }))?;
         let get_user_dto = GetUserDto::from((user_created, role_model.name));
-        Ok(get_user_dto)
+        Ok(reply::json(&get_user_dto))
     } else {
         Err(reject::custom(BadRequest {
             error: format!("Role with name {} does not exist", role_to_set),
@@ -86,25 +86,27 @@ pub async fn create_user(
     }
 }
 
-pub async fn get_user(
-    user_auth_dto: GetUserAuthDto,
-    pool: Arc<Mutex<Pool>>,
-) -> Result<impl Reply, Rejection> {
-    use crate::schema::user::dsl::*;
+pub async fn get_user(user_dto: UserDto, pool: Arc<Mutex<Pool>>) -> Result<impl Reply, Rejection> {
+    use crate::schema::role::dsl::{id, role};
+    use crate::schema::user::dsl::{email, user};
 
     let conn: &PgConnection = &pool.lock().await.get().unwrap();
 
-    let user_response = user
-        .filter(id.eq(user_auth_dto.id))
+    let user_model = user
+        .filter(email.eq(user_dto.email))
         .get_result::<User>(conn)
-        .optional()
+        .map_err(|_| reject::not_found())?;
+
+    let user_role_model = UserRole::belonging_to(&user_model)
+        .get_result::<UserRole>(conn)
         .map_err(|err| reject::custom(DatabaseError { error: err }))?;
 
-    if let Some(user_model) = user_response {
-        let user_data = GetUserDto::from((user_model, user_auth_dto.role));
+    let role_mode = role
+        .filter(id.eq(user_role_model.role_id))
+        .get_result::<Role>(conn)
+        .map_err(|err| reject::custom(DatabaseError { error: err }))?;
 
-        Ok(reply::json(&user_data))
-    } else {
-        Err(reject::not_found())
-    }
+    let user_data = GetUserDto::from((user_model, role_mode.name));
+
+    Ok(reply::json(&user_data))
 }
