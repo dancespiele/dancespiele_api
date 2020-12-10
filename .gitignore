@@ -2,3 +2,8 @@
 .env
 Cargo.lock
 .vscode
+refinery_migrations/target
+refinery_migrations/.vscode
+refinery_migrations/.env
+refinery_migrations/Cargo.lock
+src/schema.rs

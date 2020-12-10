@@ -1,0 +1,80 @@
+table! {
+    use diesel::sql_types::*;
+
+    dancespiele.auth (id) {
+        id -> Text,
+        user_id -> Text,
+        password -> Text,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+    }
+}
+
+table! {
+    use diesel::sql_types::*;
+
+    dancespiele.role (id) {
+        id -> Text,
+        name -> Text,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+    }
+}
+
+table! {
+    use diesel::sql_types::*;
+
+    dancespiele.token_type (id) {
+        id -> Text,
+        name -> Text,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+    }
+}
+
+table! {
+    use diesel::sql_types::*;
+    use crate::sql_types::*;
+
+    dancespiele.user (id) {
+        id -> Text,
+        email -> Text,
+        username -> Text,
+        status -> Status_type,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+    }
+}
+
+table! {
+    use diesel::sql_types::*;
+
+    dancespiele.user_role (id) {
+        id -> Text,
+        user_id -> Text,
+        role_id -> Text,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+    }
+}
+
+table! {
+    use diesel::sql_types::*;
+
+    dancespiele.user_token (id) {
+        id -> Text,
+        user_id -> Text,
+        token_type_id -> Text,
+        token -> Text,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+    }
+}
+
+joinable!(auth -> user (user_id));
+joinable!(user_role -> role (role_id));
+joinable!(user_role -> user (user_id));
+joinable!(user_token -> token_type (token_type_id));
+joinable!(user_token -> user (user_id));
+
+allow_tables_to_appear_in_same_query!(auth, role, token_type, user, user_role, user_token);

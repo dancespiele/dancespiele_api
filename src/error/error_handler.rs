@@ -1,4 +1,7 @@
-use super::{BadRequest, ConvertToString, Forbidden, JwtError, TransformError, TreeError};
+use super::{
+    BadRequest, ConvertToString, DatabaseError, Forbidden, HashPwdError, JwtError, TransformError,
+    TreeError,
+};
 use std::convert::Infallible;
 use warp::http::StatusCode;
 use warp::{
@@ -25,10 +28,6 @@ pub async fn error_handler(err: Rejection) -> Result<impl Reply, Infallible> {
         code = StatusCode::BAD_REQUEST;
         message = format!("Missing header error: {:#?}", missing_header);
         error!("{}", message);
-    } else if let Some(method_not_allowed) = err.find::<MethodNotAllowed>() {
-        code = StatusCode::NOT_FOUND;
-        message = format!("Method not allowed: {:#?}", method_not_allowed);
-        error!("{}", message);
     } else if let Some(forbidden_error) = err.find::<Forbidden>() {
         code = StatusCode::FORBIDDEN;
         message = format!("Forbidden error: {}", forbidden_error.error);
@@ -40,6 +39,14 @@ pub async fn error_handler(err: Rejection) -> Result<impl Reply, Infallible> {
     } else if let Some(jwt_error) = err.find::<JwtError>() {
         code = StatusCode::FORBIDDEN;
         message = format!("Token error: {}", jwt_error.error);
+        error!("{}", message);
+    } else if let Some(database_error) = err.find::<DatabaseError>() {
+        code = StatusCode::INTERNAL_SERVER_ERROR;
+        message = format!("Database error: {}", database_error.error);
+        error!("{}", message);
+    } else if let Some(hash_pwd_error) = err.find::<HashPwdError>() {
+        code = StatusCode::INTERNAL_SERVER_ERROR;
+        message = format!("Error hashing password: {}", hash_pwd_error.error);
         error!("{}", message);
     } else if let Some(sled_error) = err.find::<TreeError>() {
         code = StatusCode::INTERNAL_SERVER_ERROR;
@@ -60,6 +67,10 @@ pub async fn error_handler(err: Rejection) -> Result<impl Reply, Infallible> {
     } else if let Some(conver_to_string) = err.find::<ConvertToString>() {
         code = StatusCode::INTERNAL_SERVER_ERROR;
         message = format!("error converting to string: {}", conver_to_string.error);
+        error!("{}", message);
+    } else if let Some(method_not_allowed) = err.find::<MethodNotAllowed>() {
+        code = StatusCode::NOT_FOUND;
+        message = format!("Method not allowed: {:#?}", method_not_allowed);
         error!("{}", message);
     } else {
         code = StatusCode::INTERNAL_SERVER_ERROR;
