@@ -1,4 +1,4 @@
-use super::{get_role, Claims, GetUserAuthDto, LoginDto, Role, Roles, UserDto};
+use super::{get_role, Claims, CreateServerParamDto, LoginDto, Role, Roles, UserDto};
 use crate::db::Pool;
 use crate::error::{BadRequest, DatabaseError, Forbidden, HashPwdError, JwtError};
 use crate::user::{User, UserAuth, UserRole};
@@ -107,13 +107,41 @@ pub async fn check_role(auth_token: Option<String>) -> Result<Option<String>, Re
     }
 }
 
-pub async fn _role_guard(
-    user_auth_dto: GetUserAuthDto,
+pub async fn create_role(
+    pool: Arc<Mutex<Pool>>,
+    create_role_dto: CreateServerParamDto,
+) -> Result<impl Reply, Rejection> {
+    use crate::schema::role::dsl::*;
+
+    let conn: &PgConnection = &pool.lock().await.get().unwrap();
+
+    let role_exists = role
+        .filter(name.eq(create_role_dto.name.clone()))
+        .get_result::<Role>(conn)
+        .optional()
+        .map_err(|err| reject::custom(DatabaseError { error: err }))?;
+
+    if role_exists.is_some() {
+        return Err(reject::custom(BadRequest {
+            error: format!("Role with name {} already exists", create_role_dto.name),
+        }));
+    }
+
+    let role_created = diesel::insert_into(role)
+        .values(Role::from(create_role_dto))
+        .get_result::<Role>(conn)
+        .map_err(|err| reject::custom(DatabaseError { error: err }))?;
+
+    Ok(reply::json(&role_created))
+}
+
+pub async fn role_guard(
+    user_auth_dto: UserDto,
     roles_auth: Vec<Roles>,
-) -> Result<GetUserAuthDto, Rejection> {
+) -> Result<UserDto, Rejection> {
     if roles_auth
         .into_iter()
-        .any(|role| get_role(role) == user_auth_dto.role)
+        .any(|role| get_role(role) == get_role(user_auth_dto.role.clone()))
     {
         Ok(user_auth_dto)
     } else {

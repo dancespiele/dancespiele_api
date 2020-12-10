@@ -19,7 +19,7 @@ mod user;
 use db::init_pool;
 use dotenv::dotenv;
 use error::error_handler;
-use guard::user_login;
+use guard::{role, user_login};
 use percentages::percentages;
 use std::env;
 use std::net::SocketAddr;
@@ -39,7 +39,8 @@ async fn main() -> Result<()> {
 
     let routes = percentages()
         .or(user(pool.clone()))
-        .or(user_login(pool))
+        .or(user_login(pool.clone()))
+        .or(role(pool))
         .recover(error_handler);
 
     tokio::spawn(async {

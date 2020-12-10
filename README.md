@@ -38,6 +38,42 @@ LANGUAGE=en //for now only support en (English) or es (Spanish)
 
 ## Endpoints
 
+### login
+
+**Endpoint** `POST /login`
+
+**Body Example:**
+
+```json
+{
+    "username": "[USERNAME]",
+    "password": "[PASSWORD]"
+}
+```
+
+### Create user
+
+**Endpoint:** `POST /user`
+
+**Body Example**:
+
+```json
+{
+    "email": "[EMAIL]",
+    "username": "[USERNAME]",
+    "password": "[PASSWORD]",
+    "status": "ACTIVE"
+}
+```
+
+**Note:** You need to create the token for the first user, you can generate it installing this [create](https://github.com/dancespiele/token_generator)
+
+### Get user
+
+**Endpoint:** `GET /user`
+
+**Note:** The api will response with the user owner of the token that is sent in the `Authorization header`
+
 ### Set percentages
 
 **Endpoint:** `POST /percentages`
@@ -59,11 +95,13 @@ LANGUAGE=en //for now only support en (English) or es (Spanish)
 ]
 ```
 
+**Note:** You need to login first to get the token to set the `Authorization` header
+
 ### get current percentages set
 
 **Endpoint:** `GET /percentages`
 
-**Note:** You need to create the token with the API secret manualy and set the `Authorization` header with the token generated to request to the API
+**Note:** You need to login first to get the token to set the `Authorization` header
 
 ### Issues
 

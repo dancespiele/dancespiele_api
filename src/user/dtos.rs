@@ -1,16 +1,14 @@
 use super::models::{User, UserAuth, UserRole, UserToken};
 use crate::guard::TokenType;
-use crate::sql_types::StatusType;
+use crate::sql_types::get_status_type;
 use chrono::prelude::*;
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct CreateUserDto {
     pub email: String,
     pub username: String,
-    pub first_name: String,
-    pub last_name: String,
-    pub avatar: Option<String>,
     pub password: String,
+    pub status: String,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -34,7 +32,7 @@ impl From<CreateUserDto> for User {
             email: create_user_dto.email,
             created_at: Utc::now().naive_utc(),
             updated_at: Utc::now().naive_utc(),
-            status: StatusType::Inactive,
+            status: get_status_type(&create_user_dto.status),
         }
     }
 }

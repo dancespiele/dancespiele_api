@@ -1,4 +1,4 @@
-use super::Role;
+use super::{set_role, Role, Roles};
 use crate::user::{GetUserDto, User};
 use chrono::prelude::*;
 use chrono::Duration;
@@ -20,15 +20,38 @@ pub struct LoginDto {
     pub password: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 pub struct UserDto {
     pub email: String,
+    pub role: Roles,
 }
 
 impl From<Claims> for UserDto {
     fn from(claims: Claims) -> Self {
         Self {
             email: claims.email,
+            role: set_role(&claims.role),
+        }
+    }
+}
+
+#[derive(Deserialize)]
+pub struct CreateServerParamDto {
+    pub name: String,
+}
+
+impl From<CreateServerParamDto> for Role {
+    fn from(role: CreateServerParamDto) -> Self {
+        let uuid = format!("{}", uuid::Uuid::new_v4());
+        Self {
+            id: format!(
+                "r-{}",
+                uuid.parse::<String>()
+                    .expect("problem to pass to String from uuid format")
+            ),
+            name: role.name,
+            created_at: Utc::now().naive_utc(),
+            updated_at: Utc::now().naive_utc(),
         }
     }
 }

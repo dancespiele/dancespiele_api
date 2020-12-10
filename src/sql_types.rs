@@ -6,3 +6,11 @@ pub enum StatusType {
     Active,
     Inactive,
 }
+
+pub fn get_status_type(status: &str) -> StatusType {
+    match status {
+        "ACTIVE" => StatusType::Active,
+        "INACTIVE" => StatusType::Inactive,
+        &_ => StatusType::Active,
+    }
+}

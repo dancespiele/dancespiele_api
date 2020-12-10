@@ -1,3 +1,4 @@
+#[derive(Debug, Deserialize, Serialize, PartialEq, Clone)]
 pub enum Roles {
     System,
     Admin,
@@ -11,18 +12,18 @@ pub enum _TokenTypes {
 
 pub fn get_role(role: Roles) -> String {
     match role {
-        Roles::System => "system".to_string(),
-        Roles::Admin => "admin".to_string(),
-        Roles::User => "user".to_string(),
-        Roles::Customer => "customer".to_string(),
+        Roles::System => "SYSTEM".to_string(),
+        Roles::Admin => "ADMIN".to_string(),
+        Roles::User => "USER".to_string(),
+        Roles::Customer => "CUSTOMER".to_string(),
     }
 }
 
 pub fn set_role(role: &str) -> Roles {
     match role {
-        "system" => Roles::System,
-        "admin" => Roles::Admin,
-        "user" => Roles::User,
+        "SYSTEM" => Roles::System,
+        "ADMIN" => Roles::Admin,
+        "USER" => Roles::User,
         _ => Roles::Customer,
     }
 }

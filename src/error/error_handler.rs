@@ -28,10 +28,6 @@ pub async fn error_handler(err: Rejection) -> Result<impl Reply, Infallible> {
         code = StatusCode::BAD_REQUEST;
         message = format!("Missing header error: {:#?}", missing_header);
         error!("{}", message);
-    } else if let Some(method_not_allowed) = err.find::<MethodNotAllowed>() {
-        code = StatusCode::NOT_FOUND;
-        message = format!("Method not allowed: {:#?}", method_not_allowed);
-        error!("{}", message);
     } else if let Some(forbidden_error) = err.find::<Forbidden>() {
         code = StatusCode::FORBIDDEN;
         message = format!("Forbidden error: {}", forbidden_error.error);
@@ -71,6 +67,10 @@ pub async fn error_handler(err: Rejection) -> Result<impl Reply, Infallible> {
     } else if let Some(conver_to_string) = err.find::<ConvertToString>() {
         code = StatusCode::INTERNAL_SERVER_ERROR;
         message = format!("error converting to string: {}", conver_to_string.error);
+        error!("{}", message);
+    } else if let Some(method_not_allowed) = err.find::<MethodNotAllowed>() {
+        code = StatusCode::NOT_FOUND;
+        message = format!("Method not allowed: {:#?}", method_not_allowed);
         error!("{}", message);
     } else {
         code = StatusCode::INTERNAL_SERVER_ERROR;
