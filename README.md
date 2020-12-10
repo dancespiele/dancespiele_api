@@ -1,6 +1,6 @@
-# Dancespiele API
+# Spielcrypto API
 
-Dancespiele API is the API to set the percentages of price coin increment for after [Dancespiele Worker](https://github.com/dancespiele/dancaspiele_worker) add stop loss when the price coin achieve this increment.
+Spielcrypto API is the API to set the percentages of price coin increment for after [Spielcrypto Worker](https://github.com/dancespiele/spielcrypto_worker) add stop loss when the price coin achieve this increment.
 
 ## Requirements
 
@@ -49,18 +49,18 @@ SCHEMA=[YOUR SCHEMA]
 
 8. Print the schema of your database
 
-`diesel print-schema --schema dancespiele [YOUR SCHEMA]`
+`diesel print-schema --schema [YOUR DATABASE NAME] [YOUR SCHEMA]`
 
-9. Copy everything inside of `pub mod dancespiele` and paste in `schema.rs`.
+9. Copy everything inside of `pub mod [YOUR DATABASE NAME]` and paste in `schema.rs`.
 It should looks similar to `schema.rs.example`
 
 10. Execute:
 
-`cargo run` or with logs mode `RUST_LOG=dancespiele_api cargo=trace cargo run`
+`cargo run` or with logs mode `RUST_LOG=spielcrypto_api cargo=trace cargo run`
 
 11. Enjoy!
 
-**Note:** Before to execute Dancespiele API you need to run the RabbitMQ server first
+**Note:** Before to execute Spielcrypto API you need to run the RabbitMQ server first
 
 ## Endpoints
 
@@ -131,7 +131,7 @@ It should looks similar to `schema.rs.example`
 
 ### Issues
 
-**Dancespiele API doesn't shutdown with Ctrl-C:** For now you need to kill the process to shutdown the API. I'm trying to figure out how to fix this issue
+**Spielcrypto API doesn't shutdown with Ctrl-C:** For now you need to kill the process to shutdown the API. I'm trying to figure out how to fix this issue
 
 ## Do you like Dancespiele apps?
 If you like Dancespiele apps, help me supporting the projects:
@@ -139,12 +139,6 @@ If you like Dancespiele apps, help me supporting the projects:
 - BAT rewards in case that you use [Brave Browser](https://brave.com/)
 - [Github Sponsors](https://github.com/sponsors/dancespiele)
 - Burst coins to the address BURST-DPN6-2AT3-FCRL-9BBKG
-
-## Do you want or you need a feature that is not implemented yet?
-
-You can have the feature that you wish creating the issue in the repository and funding it [here](https://issuehunt.io/r/dancespiele/dancespiele_api?tab=idle) or if you use [Brave Browser](https://brave.com/) also you can give rewards with BAT in the comment issue explanation.
-**How much bigger is your fund more priority will be your feature!** Results will be posted in [twitter](https://twitter.com/spielcrypto).
-Of course you can contribute with you code as well.
 
 ## License
 Dancespiele API is [LICENSE PARITY](LICENSE-PARITY.md) and [LICENSE PATRON](LICENSE-PATRON.md) licensed. If you need a comercial license sponsor to Dancespiele in the right tier or contact to `spielcrypto@gmail.com`
