@@ -47,7 +47,7 @@ SCHEMA=[YOUR SCHEMA]
 
 7. Create the file `schema.rs` in root folder
 
-8. Print the schema from your database
+8. Print the schema of your database
 
 `diesel print-schema --schema dancespiele [YOUR SCHEMA]`
 
