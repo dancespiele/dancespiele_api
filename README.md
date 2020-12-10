@@ -149,4 +149,4 @@ Of course you can contribute with you code as well.
 ## License
 Dancespiele API is [LICENSE PARITY](LICENSE-PARITY.md) and [LICENSE PATRON](LICENSE-PATRON.md) licensed. If you need a comercial license sponsor to Dancespiele in the right tier or contact to `spielcrypto@gmail.com`
 
-**Warning:** Each functionality has unit test to avoid bugs however the author of this app is not responsible for all the issues and losses that can happen using it. Please, read the licenses.
+**Warning:** Each functionality is tested before to avoid bugs however the author of this app is not responsible for all the issues and losses that can happen using it. Please, read the licenses.
